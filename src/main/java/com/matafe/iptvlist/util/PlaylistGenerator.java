@@ -72,7 +72,9 @@ public class PlaylistGenerator {
 	String password = "123456";
 	String xmlSourceFile = "/Users/matafe/workspace/iptvlist/src/main/resources/source-playlist.xml";
 	String m3uTargetFile = "target/" + username + ".m3u";
-	String resourceUri = "http://localhost:8080/iptvlist/resources/iptv";
+	//String resourceUri = "http://localhost:8080/iptvlist/resources/iptv";
+	String resourceUri = "http://iptvlistapp-iptvlist.193b.starter-ca-central-1.openshiftapps.com/";
+	
 
 	g.generate(username, password, new File(xmlSourceFile), new File(m3uTargetFile), resourceUri);
     }
