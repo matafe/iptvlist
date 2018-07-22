@@ -14,6 +14,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class M3UItem {
 
+    @XmlAttribute(name = "num")
+    private Integer number = 0;
+
     @XmlAttribute(name = "tvg-id")
     private String tvgId;
 
@@ -40,6 +43,14 @@ public class M3UItem {
 	this.tvgLogo = tvgLogo;
 	this.groupTitle = groupTitle;
 	this.url = url;
+    }
+
+    public Integer getNumber() {
+	return number;
+    }
+
+    public void setNumber(Integer number) {
+	this.number = number;
     }
 
     public String getTvgId() {
@@ -110,6 +121,16 @@ public class M3UItem {
     @Override
     public String toString() {
 	return "M3UItem [tvgId=" + tvgId + ", url=" + url + "]";
+    }
+
+    public int countNonNullMetadataAttributes() {
+	int count = 0;
+	count += this.getTvgId() != null ? 1 : 0;
+	count += this.getTvgName() != null ? 1 : 0;
+	count += this.getTvgLogo() != null ? 1 : 0;
+	count += this.getGroupTitle() != null ? 1 : 0;
+	return count;
+
     }
 
 }

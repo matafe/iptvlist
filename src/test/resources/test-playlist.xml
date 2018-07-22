@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <playlist name="MyPlaylist">
-    <item tvg-id="TVG-ID-0" tvg-name="TVG-NAME-0" tvg-logo="TVG-LOGO-0" group-title="GROUP-TITLE-0" url="URL-0"/>
-    <item tvg-id="TVG-ID-1" tvg-name="TVG-NAME-1" tvg-logo="TVG-LOGO-1" group-title="GROUP-TITLE-1" url="URL-1"/>
+    <item tvg-id="TVG-ID-0" tvg-name="TVG-NAME-0" tvg-logo="TVG-LOGO-0" group-title="GROUP-TITLE-0" url="HTTP://TEST.TS-0"/>
+    <item tvg-id="TVG-ID-1" tvg-name="TVG-NAME-1" tvg-logo="TVG-LOGO-1" group-title="GROUP-TITLE-1" url="HTTP://TEST.TS-1"/>
+    <item tvg-id="TVG-ID-2" tvg-name="TVG-NAME-2" tvg-logo="TVG-LOGO-2" group-title="GROUP-TITLE-2" url="HTTP://TEST.TS-2"/>
 </playlist>

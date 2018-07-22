@@ -1,0 +1,10 @@
+#EXTM3U
+
+#EXTINF:-1 tvg-id="TVG-ID-0" tvg-name="TVG-NAME-0" tvg-logo="TVG-LOGO-0" group-title="GROUP-TITLE-0",TVG-NAME-0
+HTTP://TEST.TS-0
+
+
+#EXTINF:-1 tvg-id="TVG-ID-1" tvg-name="TVG-NAME-1" tvg-logo="TVG-LOGO-1" group-title="GROUP-TITLE-1",TVG-NAME-1 
+HTTP://TEST.TS-1
+#EXTINF:-1 tvg-id="TVG-ID-2" tvg-name="TVG-NAME-2" tvg-logo="TVG-LOGO-2" group-title="GROUP-TITLE-2",TVG-NAME-2
+HTTP://TEST.TS-2

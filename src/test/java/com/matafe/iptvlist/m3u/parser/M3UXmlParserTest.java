@@ -1,4 +1,4 @@
-package com.matafe.iptvlist.m3u;
+package com.matafe.iptvlist.m3u.parser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -12,37 +12,40 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.matafe.iptvlist.m3u.M3UItem;
+import com.matafe.iptvlist.m3u.M3UPlaylist;
+
 /**
- * M3U Parser Unit Test
+ * M3U Xml Parser Unit Test
  * 
  * @author matafe@gmail.com
  */
-public class M3UParserTest {
+public class M3UXmlParserTest {
 
-    M3UParser parser;
+    IM3UParser parser;
 
     @Before
     public void setUp() throws Exception {
-	this.parser = new M3UParser();
+	this.parser = new M3UXmlParser();
     }
 
     @Test
-    public void testUnmarshall() {
+    public void testReadl() {
 	File xmlFile = new File(getClass().getClassLoader().getResource("test-playlist.xml").getFile());
-	M3UPlaylist playlist = parser.unmarshall(xmlFile);
+	M3UPlaylist playlist = parser.read(xmlFile);
 	assertThat(playlist.getName(), equalTo("MyPlaylist"));
-	assertThat(playlist.getItems().size(), equalTo(2));
+	assertThat(playlist.getItems().size(), equalTo(3));
 	for (int i = 0; i < playlist.getItems().size(); i++) {
 	    assertThat(playlist.getItems().get(i).getTvgId(), equalTo("TVG-ID-" + i));
 	    assertThat(playlist.getItems().get(i).getTvgName(), equalTo("TVG-NAME-" + i));
 	    assertThat(playlist.getItems().get(i).getTvgLogo(), equalTo("TVG-LOGO-" + i));
 	    assertThat(playlist.getItems().get(i).getGroupTitle(), equalTo("GROUP-TITLE-" + i));
-	    assertThat(playlist.getItems().get(i).getUrl(), equalTo("URL-" + i));
+	    assertThat(playlist.getItems().get(i).getUrl(), equalTo("HTTP://TEST.TS-" + i));
 	}
     }
 
     @Test
-    public void testMarshall() throws Exception {
+    public void testWrite() throws Exception {
 	File xmlFile = new File("target/playlistTest.xml");
 	if (xmlFile.exists()) {
 	    xmlFile.delete();
@@ -63,11 +66,11 @@ public class M3UParserTest {
 	    items.add(item);
 	}
 
-	this.parser.marshall(playlist, xmlFile, true);
+	this.parser.write(playlist, xmlFile);
 
 	assertThat(xmlFile.exists(), is(true));
 
-	M3UPlaylist playlist2 = this.parser.unmarshall(xmlFile);
+	M3UPlaylist playlist2 = this.parser.read(xmlFile);
 
 	assertThat(playlist2.getName(), equalTo(playlist.getName()));
 	assertThat(playlist2.getItems().size(), equalTo(playlist.getItems().size()));
@@ -80,11 +83,11 @@ public class M3UParserTest {
     }
 
     @Test
-    public void testUnmarshallSourcePlaylistIfPresent() {
+    public void testReadSourcePlaylistIfPresent() {
 	URL resource = getClass().getClassLoader().getResource("source-playlist.xml");
 	if (resource != null) {
 	    File xmlFile = new File(resource.getFile());
-	    M3UPlaylist playlist = parser.unmarshall(xmlFile);
+	    M3UPlaylist playlist = parser.read(xmlFile);
 	    assertThat(playlist.getName(), equalTo("SourcePlaylist"));
 	    assertThat(playlist.getItems().size() > 0, is(true));
 	}

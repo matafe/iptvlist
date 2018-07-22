@@ -8,15 +8,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.matafe.iptvlist.m3u.M3UItem;
-import com.matafe.iptvlist.m3u.M3UParser;
 import com.matafe.iptvlist.m3u.M3UPlaylist;
+import com.matafe.iptvlist.m3u.parser.IM3UParser;
+import com.matafe.iptvlist.m3u.parser.M3UParser;
+import com.matafe.iptvlist.m3u.parser.M3UXmlParser;
+import com.matafe.iptvlist.m3u.parser.M3uParserType;
 
 public class PlaylistGenerator {
 
-    public void generate(String username, String password, File xmlSourceFile, File m3uTargetFile, String resourceUri) {
+    private static final String SIMPLE_TEMPLATE = "source-template-simple.m3u";
 
-	String template = readTemplate();
-	M3UPlaylist targetPlaylist = createTargetPlaylist(username, xmlSourceFile);
+    private static final String COMPLEX_TEMPLATE = "source-template-complex.m3u";
+
+    public void generateSimpleList(String username, String password, File sourceFile, File m3uTargetFile,
+	    String resourceUri) {
+
+	String template = readTemplate(SIMPLE_TEMPLATE);
+	M3UPlaylist targetPlaylist = createTargetPlaylist(username, sourceFile);
 
 	String[] lines = template.split("\n");
 
@@ -37,16 +45,61 @@ public class PlaylistGenerator {
 
 	try {
 	    Files.write(m3uTargetFile.toPath(), content.toString().getBytes(StandardCharsets.UTF_8));
-	    System.out.println("File generated: " + m3uTargetFile.toPath());
+	    System.out.println(
+		    "File generated: " + m3uTargetFile.toPath() + " from source file: " + sourceFile.getName());
 	} catch (IOException e) {
 	    throw new RuntimeException("Failed to create the target file", e);
 	}
 
     }
 
-    private M3UPlaylist createTargetPlaylist(String playlistName, File xmlSourceFile) {
-	M3UParser parser = new M3UParser();
-	M3UPlaylist sourcePlaylist = parser.unmarshall(xmlSourceFile);
+    // TODO
+    public void generateComplexList(String username, String password, File sourceFile, File m3uTargetFile,
+	    String resourceUri) {
+
+	String template = readTemplate(COMPLEX_TEMPLATE);
+	M3UPlaylist targetPlaylist = createTargetPlaylist(username, sourceFile);
+
+	String[] lines = template.split("\n");
+
+	StringBuilder content = new StringBuilder();
+	content.append(lines[0]);
+	content.append("\n");
+	for (M3UItem item : targetPlaylist.getItems()) {
+	    String line1 = lines[1].replaceAll("\\$\\{channelname\\}", item.getTvgName());
+	    content.append(line1);
+	    content.append("\n");
+	    String line2 = lines[2].replaceAll("\\$\\{uri\\}", resourceUri);
+	    line2 = line2.replaceAll("\\$\\{username\\}", username);
+	    line2 = line2.replaceAll("\\$\\{password\\}", password);
+	    line2 = line2.replaceAll("\\$\\{channelname\\}", item.getTvgName());
+	    content.append(line2);
+	    content.append("\n");
+	}
+
+	try {
+	    Files.write(m3uTargetFile.toPath(), content.toString().getBytes(StandardCharsets.UTF_8));
+	    System.out.println(
+		    "File generated: " + m3uTargetFile.toPath() + " from source file: " + sourceFile.getName());
+	} catch (IOException e) {
+	    throw new RuntimeException("Failed to create the target file", e);
+	}
+
+    }
+
+    private M3UPlaylist createTargetPlaylist(String playlistName, File sourceFile) {
+
+	M3uParserType.Type type = sourceFile.getName().toUpperCase().endsWith("XML") ? M3uParserType.Type.XML
+		: M3uParserType.Type.M3U;
+	IM3UParser parser = null;
+
+	if (type.equals(M3uParserType.Type.XML)) {
+	    parser = new M3UXmlParser();
+	} else {
+	    parser = new M3UParser();
+	}
+
+	M3UPlaylist sourcePlaylist = parser.read(sourceFile);
 
 	M3UPlaylist targetPlaylist = new M3UPlaylist();
 	targetPlaylist.setName(playlistName);
@@ -70,17 +123,19 @@ public class PlaylistGenerator {
 
 	String username = "matafe";
 	String password = "123456";
-	String xmlSourceFile = "/Users/matafe/workspace/iptvlist/src/main/resources/source-playlist.xml";
+	// String sourceFile =
+	// "/Users/matafe/workspace/iptvlist/src/main/resources/source-playlist.xml";
+	String sourceFile = "/Users/matafe/workspace/iptvlist/src/main/resources/source-playlist.m3u";
 	String m3uTargetFile = "target/" + username + ".m3u";
-	//String resourceUri = "http://localhost:8080/iptvlist/resources/iptv";
-	String resourceUri = "http://iptvlistapp-iptvlist.193b.starter-ca-central-1.openshiftapps.com/";
-	
+	String resourceUri = "http://localhost:8080/iptvlist/resources/iptv";
+	// String resourceUri =
+	// "http://iptvlistapp-iptvlist.193b.starter-ca-central-1.openshiftapps.com/";
 
-	g.generate(username, password, new File(xmlSourceFile), new File(m3uTargetFile), resourceUri);
+	g.generateSimpleList(username, password, new File(sourceFile), new File(m3uTargetFile), resourceUri);
     }
 
-    public String readTemplate() {
-	File file = new File(getClass().getClassLoader().getResource("list-template.m3u").getFile());
+    public String readTemplate(String templateFileName) {
+	File file = new File(getClass().getClassLoader().getResource(templateFileName).getFile());
 	Path template = file.toPath();
 
 	try {
