@@ -3,9 +3,10 @@ package com.matafe.iptvlist.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import com.matafe.iptvlist.m3u.M3UItem;
 import com.matafe.iptvlist.m3u.M3UPlaylist;
@@ -138,7 +139,7 @@ public class PlaylistGenerator {
     public static void main(String[] args) {
 	PlaylistGenerator g = new PlaylistGenerator();
 
-	String username = "matafe";
+	String username = "test";
 	String password = "123456";
 	// String sourceFile =
 	// "/Users/matafe/workspace/iptvlist/src/main/resources/source-playlist.xml";
@@ -152,17 +153,14 @@ public class PlaylistGenerator {
     }
 
     public String readTemplate(String templateFileName) {
-	File file = new File(getClass().getClassLoader().getResource(templateFileName).getFile());
-	Path template = file.toPath();
+	URL resource = getClass().getClassLoader().getResource(templateFileName);
 
-	try {
-	    BufferedReader reader = Files.newBufferedReader(template, StandardCharsets.UTF_8);
+	try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()))) {
 	    StringBuilder content = new StringBuilder();
-	    String line = null;
+	    String line;
 	    while ((line = reader.readLine()) != null) {
 		content.append(line).append("\n");
 	    }
-
 	    return content.toString();
 
 	} catch (IOException e) {

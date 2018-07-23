@@ -11,6 +11,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.matafe.iptvlist.m3u.parser.IM3UParser;
 import com.matafe.iptvlist.m3u.parser.M3UParserFactory;
 
@@ -23,6 +26,8 @@ import com.matafe.iptvlist.m3u.parser.M3UParserFactory;
 @Singleton
 public class M3UItemStore {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final Map<String, M3UItem> cache = new LinkedHashMap<>();
 
     @Inject
@@ -30,7 +35,12 @@ public class M3UItemStore {
 
     @PostConstruct
     public void initialize() {
-	load(getSourceFile());
+	try {
+	    load(getSourceFile());
+	} catch (Exception e) {
+	    logger.error("Failed to load the source playlist", e);
+	}
+
     }
 
     public void load(File sourceFile) {
@@ -55,7 +65,12 @@ public class M3UItemStore {
 
     public int realod() {
 	cache.clear();
-	load(getSourceFile());
+	try {
+	    load(getSourceFile());
+	} catch (Exception e) {
+	    logger.error("Failed to load the source playlist", e);
+	}
+
 	return count();
     }
 
@@ -65,6 +80,7 @@ public class M3UItemStore {
 	if (property != null) {
 	    sourceFile = new File(property);
 	} else {
+	    // not shipped!
 	    sourceFile = new File(getClass().getClassLoader().getResource("source-playlist.m3u").getFile());
 	}
 
