@@ -1,0 +1,1 @@
+web: java -jar target/iptvlist.war -Dswarm.http.port=$PORT

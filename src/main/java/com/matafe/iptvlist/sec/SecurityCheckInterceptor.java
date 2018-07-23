@@ -6,6 +6,7 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import com.matafe.iptvlist.ApplicationException;
+import com.matafe.iptvlist.Message;
 
 /**
  * Security Check Interceptor
@@ -25,16 +26,26 @@ public class SecurityCheckInterceptor {
 	Object[] params = context.getParameters();
 
 	if (params == null || params.length < 2) {
-	    throw new ApplicationException("Invalid arguments for a security method!!!");
+	    throw new ApplicationException(
+		    new Message.Builder().text("Invalid arguments for a security method.").build());
 	}
 
 	String username = (String) params[0];
 	String password = (String) params[1];
 
-	this.authenticator.authenticate(username, password);
+	if (isAdminRoleResouce(context)) {
+	    this.authenticator.authenticate(username, password);
+	} else {
+	    // the url path param for the users are not encrypted.
+	    this.authenticator.authenticate(username, password, true);
+	}
 
 	Object ret = context.proceed();
 
 	return ret;
+    }
+
+    private boolean isAdminRoleResouce(InvocationContext context) {
+	return context.getMethod().getAnnotation(Secured.class).value() == Secured.Role.ADMIN;
     }
 }

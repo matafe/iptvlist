@@ -29,6 +29,9 @@ public class M3UItem {
     @XmlAttribute(name = "group-title")
     private String groupTitle;
 
+    @XmlAttribute(name = "name")
+    private String name;
+
     @XmlAttribute(name = "url", required = true)
     private String url;
 
@@ -36,13 +39,10 @@ public class M3UItem {
 	super();
     }
 
-    public M3UItem(String tvgId, String tvgName, String tvgLogo, String groupTitle, String url) {
-	super();
-	this.tvgId = tvgId;
-	this.tvgName = tvgName;
-	this.tvgLogo = tvgLogo;
-	this.groupTitle = groupTitle;
+    public M3UItem(final String name, final String url, final String groupTitle) {
+	this.name = name;
 	this.url = url;
+	this.groupTitle = groupTitle;
     }
 
     public Integer getNumber() {
@@ -85,6 +85,14 @@ public class M3UItem {
 	this.groupTitle = groupTitle;
     }
 
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
     public String getUrl() {
 	return url;
     }
@@ -97,7 +105,7 @@ public class M3UItem {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((tvgName == null) ? 0 : tvgName.hashCode());
+	result = prime * result + ((url == null) ? 0 : url.hashCode());
 	return result;
     }
 
@@ -110,17 +118,17 @@ public class M3UItem {
 	if (getClass() != obj.getClass())
 	    return false;
 	M3UItem other = (M3UItem) obj;
-	if (tvgName == null) {
-	    if (other.tvgName != null)
+	if (url == null) {
+	    if (other.url != null)
 		return false;
-	} else if (!tvgName.equals(other.tvgName))
+	} else if (!url.equals(other.url))
 	    return false;
 	return true;
     }
 
     @Override
     public String toString() {
-	return "M3UItem [tvgId=" + tvgId + ", url=" + url + "]";
+	return "M3UItem [name=" + name + ", url=" + url + "]";
     }
 
     public int countNonNullMetadataAttributes() {

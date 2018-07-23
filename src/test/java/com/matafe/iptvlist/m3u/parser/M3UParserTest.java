@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.net.URL;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +90,7 @@ public class M3UParserTest {
 	assertThat(playlist2.getItems().get(0).getUrl(), equalTo(playlist.getItems().get(0).getUrl()));
 
     }
-    
+
     @Test
     public void testWriteComplex() throws Exception {
 	File m3uFile = new File("target/playlistTestComplex.m3u");
@@ -129,15 +129,27 @@ public class M3UParserTest {
 
     }
 
-//    @Test
-//    public void testUnmarshallSourcePlaylistIfPresent() {
-//	URL resource = getClass().getClassLoader().getResource("source-playlist.xml");
-//	if (resource != null) {
-//	    File xmlFile = new File(resource.getFile());
-//	    M3UPlaylist playlist = parser.read(xmlFile);
-//	    assertThat(playlist.getName(), equalTo("SourcePlaylist"));
-//	    assertThat(playlist.getItems().size() > 0, is(true));
-//	}
-//    }
+    @Test
+    public void testWriteToStringWriter() {
+	File m3uFile = new File(getClass().getClassLoader().getResource("test-playlist-simple.m3u").getFile());
+	M3UPlaylist playlist = parser.read(m3uFile);
+	StringWriter sw = new StringWriter();
+	parser.write(playlist, sw, null);
+	String content = sw.toString();
+	System.out.println(content);
+	assertThat(content, notNullValue());
+    }
+
+    // @Test
+    // public void testUnmarshallSourcePlaylistIfPresent() {
+    // URL resource =
+    // getClass().getClassLoader().getResource("source-playlist.xml");
+    // if (resource != null) {
+    // File xmlFile = new File(resource.getFile());
+    // M3UPlaylist playlist = parser.read(xmlFile);
+    // assertThat(playlist.getName(), equalTo("SourcePlaylist"));
+    // assertThat(playlist.getItems().size() > 0, is(true));
+    // }
+    // }
 
 }

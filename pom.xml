@@ -13,12 +13,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 		<jee.version>8.0</jee.version>
+		<version.thorntail>2.0.0.Final</version.thorntail>
 		<jmockit.version>1.40</jmockit.version>
 		<hamcrest.version>1.3</hamcrest.version>
-		<junit.version>4.12</junit.version>		
+		<junit.version>4.12</junit.version>
 	</properties>
-
+	<!-- <dependencyManagement> <dependencies> <dependency> <groupId>io.thorntail</groupId> 
+		<artifactId>bom-all</artifactId> <version>${version.thorntail}</version> 
+		<scope>import</scope> <type>pom</type> </dependency> </dependencies> </dependencyManagement> -->
 	<dependencies>
+		<!-- <dependency> <groupId>io.thorntail</groupId> <artifactId>jaxrs</artifactId> 
+			</dependency> <dependency> <groupId>io.thorntail</groupId> <artifactId>cdi</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
@@ -32,11 +38,24 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
 			<groupId>org.jmockit</groupId>
 			<artifactId>jmockit</artifactId>
 			<version>${jmockit.version}</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -62,6 +81,20 @@
 				</excludes>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>io.thorntail</groupId>
+				<artifactId>thorntail-maven-plugin</artifactId>
+				<version>${version.thorntail}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<profiles>

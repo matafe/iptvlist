@@ -1,5 +1,7 @@
 package com.matafe.iptvlist;
 
+import static java.text.MessageFormat.format;
+
 /**
  * Application Exception
  * 
@@ -13,4 +15,15 @@ public class ApplicationException extends RuntimeException {
 	super(message);
     }
 
+    public ApplicationException(Message message) {
+	super(format(message.getText(), new Object[0]));
+    }
+
+    public ApplicationException(Message message, Object... args) {
+	super(format(message.getText(), args));
+    }
+
+    public ApplicationException(Message message, Exception exception, Object... args) {
+	super(format(message.getText(), args), exception);
+    }
 }

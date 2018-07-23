@@ -20,18 +20,33 @@ public class PlaylistGenerator {
 
     private static final String COMPLEX_TEMPLATE = "source-template-complex.m3u";
 
-    public void generateSimpleList(String username, String password, File sourceFile, File m3uTargetFile,
+    public void generateM3uFile(String username, String password, File sourceFile, File m3uTargetFile,
 	    String resourceUri) {
 
-	String template = readTemplate(SIMPLE_TEMPLATE);
 	M3UPlaylist targetPlaylist = createTargetPlaylist(username, sourceFile);
+
+	String content = generateM3uFileContent(username, password, targetPlaylist, resourceUri);
+
+	try {
+	    Files.write(m3uTargetFile.toPath(), content.toString().getBytes(StandardCharsets.UTF_8));
+	    System.out.println(
+		    "File generated: " + m3uTargetFile.toPath() + " from source file: " + sourceFile.getName());
+	} catch (IOException e) {
+	    throw new RuntimeException("Failed to create the target file", e);
+	}
+
+    }
+
+    public String generateM3uFileContent(String username, String password, M3UPlaylist playlist, String resourceUri) {
+
+	String template = readTemplate(SIMPLE_TEMPLATE);
 
 	String[] lines = template.split("\n");
 
 	StringBuilder content = new StringBuilder();
 	content.append(lines[0]);
 	content.append("\n");
-	for (M3UItem item : targetPlaylist.getItems()) {
+	for (M3UItem item : playlist.getItems()) {
 	    String line1 = lines[1].replaceAll("\\$\\{channelname\\}", item.getTvgName());
 	    content.append(line1);
 	    content.append("\n");
@@ -43,13 +58,7 @@ public class PlaylistGenerator {
 	    content.append("\n");
 	}
 
-	try {
-	    Files.write(m3uTargetFile.toPath(), content.toString().getBytes(StandardCharsets.UTF_8));
-	    System.out.println(
-		    "File generated: " + m3uTargetFile.toPath() + " from source file: " + sourceFile.getName());
-	} catch (IOException e) {
-	    throw new RuntimeException("Failed to create the target file", e);
-	}
+	return content.toString();
 
     }
 
@@ -87,6 +96,26 @@ public class PlaylistGenerator {
 
     }
 
+    public M3UPlaylist createTargetPlaylist(String playlistName, M3UPlaylist sourcePlaylist) {
+
+	M3UPlaylist targetPlaylist = new M3UPlaylist();
+	targetPlaylist.setName(playlistName);
+
+	for (M3UItem sourceItem : sourcePlaylist.getItems()) {
+	    M3UItem targetItem = new M3UItem();
+	    targetItem.setTvgId(sourceItem.getTvgId());
+	    targetItem.setTvgName(sourceItem.getTvgName());
+	    targetItem.setTvgLogo(sourceItem.getTvgLogo());
+	    targetItem.setGroupTitle(sourceItem.getGroupTitle());
+	    targetItem.setName(sourceItem.getName());
+	    targetItem.setUrl(sourceItem.getUrl());
+
+	    targetPlaylist.addItem(targetItem);
+	}
+
+	return targetPlaylist;
+    }
+
     private M3UPlaylist createTargetPlaylist(String playlistName, File sourceFile) {
 
 	M3uParserType.Type type = sourceFile.getName().toUpperCase().endsWith("XML") ? M3uParserType.Type.XML
@@ -101,19 +130,7 @@ public class PlaylistGenerator {
 
 	M3UPlaylist sourcePlaylist = parser.read(sourceFile);
 
-	M3UPlaylist targetPlaylist = new M3UPlaylist();
-	targetPlaylist.setName(playlistName);
-
-	for (M3UItem sourceItem : sourcePlaylist.getItems()) {
-	    M3UItem targetItem = new M3UItem();
-	    targetItem.setTvgId(sourceItem.getTvgId());
-	    targetItem.setTvgName(sourceItem.getTvgName());
-	    targetItem.setTvgLogo(sourceItem.getTvgLogo());
-	    targetItem.setGroupTitle(sourceItem.getGroupTitle());
-	    targetItem.setUrl(sourceItem.getUrl());
-
-	    targetPlaylist.addItem(targetItem);
-	}
+	M3UPlaylist targetPlaylist = createTargetPlaylist(playlistName, sourcePlaylist);
 
 	return targetPlaylist;
     }
@@ -131,7 +148,7 @@ public class PlaylistGenerator {
 	// String resourceUri =
 	// "http://iptvlistapp-iptvlist.193b.starter-ca-central-1.openshiftapps.com/";
 
-	g.generateSimpleList(username, password, new File(sourceFile), new File(m3uTargetFile), resourceUri);
+	g.generateM3uFile(username, password, new File(sourceFile), new File(m3uTargetFile), resourceUri);
     }
 
     public String readTemplate(String templateFileName) {

@@ -3,8 +3,11 @@ package com.matafe.iptvlist.m3u.parser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,11 +40,10 @@ public class M3UParser implements IM3UParser {
     private static final String HTTP = "HTTP";
 
     @Override
-    public M3UPlaylist read(File fromFile) {
+    public M3UPlaylist read(InputStream fromInputStream) {
 
 	int lineCount = 0;
-	try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fromFile)));) {
-	    // String content = new String(Files.readAllBytes(fromFile.toPath()));
+	try (BufferedReader reader = new BufferedReader(new InputStreamReader(fromInputStream));) {
 	    String line = null;
 
 	    M3UPlaylist playlist = new M3UPlaylist();
@@ -62,12 +64,12 @@ public class M3UParser implements IM3UParser {
 			String[] numberAndMetadata = splitLine(metadata);
 			String number = numberAndMetadata[0].trim();
 			item.setNumber(Integer.parseInt(number));
-			if (numberAndMetadata.length <= 1) {
-			    // simple m3u files
-			    String name = metadataAndName[1].trim();
-			    item.setTvgId(name);
-			    item.setTvgName(name);
-			} else {
+			// simple m3u files
+			String name = metadataAndName[1].trim();
+			item.setName(name);
+			item.setTvgId(name);
+			item.setTvgName(name);
+			if (numberAndMetadata.length > 1) {
 			    // complex m3u files with tvg tags
 			    for (int i = 1; i < numberAndMetadata.length; i++) {
 				String nAndM = numberAndMetadata[i].trim();
@@ -100,9 +102,18 @@ public class M3UParser implements IM3UParser {
 
 	    return playlist;
 	} catch (Exception e) {
-	    throw new RuntimeException("Failed to read the file: " + fromFile.getName() + " on line: " + lineCount, e);
+	    throw new RuntimeException("Failed to read the file on line: " + lineCount, e);
 	}
 
+    }
+
+    @Override
+    public M3UPlaylist read(File fromFile) {
+	try {
+	    return read(new FileInputStream(fromFile));
+	} catch (FileNotFoundException e) {
+	    throw new RuntimeException("Failed to read the file: " + fromFile.getName(), e);
+	}
     }
 
     private String[] splitLine(String subjectString) {
@@ -134,8 +145,7 @@ public class M3UParser implements IM3UParser {
 	return sb;
     }
 
-    @Override
-    public void write(M3UPlaylist playlist, File outputFile, Map<String, Object> configs) {
+    public String convertToString(M3UPlaylist playlist) {
 	StringBuilder content = new StringBuilder();
 	content.append(EXTM3U).append("\n");
 
@@ -171,11 +181,31 @@ public class M3UParser implements IM3UParser {
 	    i++;
 	}
 
+	return content.toString();
+
+    }
+
+    @Override
+    public void write(M3UPlaylist playlist, File outputFile, Map<String, Object> configs) {
+
+	String content = convertToString(playlist);
+
 	try {
-	    Files.write(outputFile.toPath(), content.toString().getBytes());
+	    Files.write(outputFile.toPath(), content.getBytes());
 	} catch (IOException e) {
 	    throw new RuntimeException("Failed to write to file: " + outputFile.getName(), e);
 	}
+    }
+
+    @Override
+    public void write(M3UPlaylist playlist, Writer writer, Map<String, Object> configs) {
+	try {
+	    writer.write(convertToString(playlist));
+	    writer.flush();
+	} catch (IOException e) {
+	    throw new RuntimeException("Failed to write to writer", e);
+	}
+
     }
 
 }
