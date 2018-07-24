@@ -6,6 +6,7 @@ import java.util.Calendar;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -27,6 +28,12 @@ public class User implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Calendar validUntil;
+
+    @XmlTransient
+    private Calendar loginTime;
+
+    @XmlTransient
+    private Calendar lastTokenValidationTime;
 
     public String getUsername() {
 	return username;
@@ -74,6 +81,22 @@ public class User implements Serializable {
 
     public void setValidUntil(Calendar validUntil) {
 	this.validUntil = validUntil;
+    }
+
+    public void setLoginTime(Calendar loginTime) {
+	this.loginTime = loginTime;
+    }
+
+    public Calendar getLoginTime() {
+	return loginTime;
+    }
+
+    public void setLastTokenValidationTime(Calendar time) {
+	this.lastTokenValidationTime = time;
+    }
+
+    public Calendar getLastTokenValidationTime() {
+	return lastTokenValidationTime;
     }
 
     @Override

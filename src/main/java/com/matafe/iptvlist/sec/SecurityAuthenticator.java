@@ -1,5 +1,9 @@
 package com.matafe.iptvlist.sec;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Calendar;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -13,34 +17,38 @@ import com.matafe.iptvlist.Message;
 @Singleton
 public class SecurityAuthenticator {
 
-    private static final String ADMIN_PASSWORD = "31OpjXYGJQxxzbOxsedW/g==";
-
     @Inject
     private SecurityStore securityStore;
 
     @Inject
     private SecurityUtil securityUtil;
 
-    public void authenticate(String username, String password) {
-	this.authenticate(username, password, false);
+    public User authenticate(String username, String password) {
+	return this.authenticate(username, password, false);
     }
 
-    public void authenticate(String username, String password, boolean byPassEncryption) {
+    public User authenticate(String username, String password, boolean byPassEncryption) {
 
-	boolean isAuthenticated = false;
+	User authenticatedUser = null;
 
 	if (!isBlank(username) && password != null) {
 	    try {
 		User found = securityStore.find(username);
+		if (!found.isActive()) {
+		    throw new UserNotFoundException(username);
+		}
 		String encryptedPassword = byPassEncryption ? password : securityUtil.encrypt(password);
-		isAuthenticated = isEq(encryptedPassword, found.getPassword());
+		if (isEq(encryptedPassword, found.getPassword())) {
+		    authenticatedUser = found;
+		}
 	    } catch (UserNotFoundException e) {
 		// Ok. Not Authenticated.
 	    }
 	}
-	if (!isAuthenticated) {
+	if (authenticatedUser == null) {
 	    throw new AuthenticationException(new Message.Builder().text("Incorrect username and password.").build());
 	}
+	return authenticatedUser;
     }
 
     private boolean isEq(String str, String match) {
@@ -49,5 +57,17 @@ public class SecurityAuthenticator {
 
     private boolean isBlank(String str) {
 	return str == null || str.isEmpty();
+    }
+
+    public String generateToken(User user) {
+	// JWT
+	String tokenKey = user.getUsername().concat(user.getPassword())
+		.concat(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+
+	return Base64.getEncoder().encodeToString(tokenKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public void validateToken(String token) {
+	securityStore.getAndUpdateLogged(token);
     }
 }

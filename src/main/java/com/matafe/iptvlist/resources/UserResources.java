@@ -15,7 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.matafe.iptvlist.sec.Credentials;
 import com.matafe.iptvlist.sec.Secured;
+import com.matafe.iptvlist.sec.SecurityAuthenticator;
 import com.matafe.iptvlist.sec.SecurityStore;
 import com.matafe.iptvlist.sec.User;
 import com.matafe.iptvlist.util.DateUtil;
@@ -30,6 +32,33 @@ public class UserResources {
 
     @Inject
     SecurityStore securityStore;
+
+    @Inject
+    SecurityAuthenticator authenticator;
+
+    @POST
+    @Consumes("application/json")
+    @Path("login")
+    public Response login(Credentials credentials) {
+
+	try {
+
+	    // Authenticate the user using the credentials provided
+	    User user = authenticator.authenticate(credentials.getUsername(), credentials.getPassword());
+
+	    // Generate a token for the user
+	    String token = authenticator.generateToken(user);
+	    
+	    // Save the token on the server side.
+	    securityStore.addLogged(user, token);
+
+	    // Return the token on the response
+	    return Response.ok(token).build();
+
+	} catch (Exception e) {
+	    return Response.status(Response.Status.UNAUTHORIZED).build();
+	}
+    }
 
     @GET
     @Secured(Secured.Role.ADMIN)
@@ -71,7 +100,7 @@ public class UserResources {
     public Response activateUser(@PathParam("username") String username, @PathParam("year") Integer year,
 	    @PathParam("month") Integer month, @PathParam("day") Integer day, @PathParam("hour") Integer hour,
 	    @PathParam("min") Integer min, @PathParam("sec") Integer sec) {
-	Calendar dateTime = DateUtil.parseCalendar(year, (month-1), day, hour, min, sec);
+	Calendar dateTime = DateUtil.parseCalendar(year, (month - 1), day, hour, min, sec);
 	securityStore.activate(username, dateTime);
 	return Response.ok("User " + username + " activated until " + DateUtil.prettyFormat(dateTime)).build();
     }

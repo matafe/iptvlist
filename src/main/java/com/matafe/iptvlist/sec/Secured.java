@@ -1,12 +1,15 @@
 package com.matafe.iptvlist.sec;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.interceptor.InterceptorBinding;
+import javax.enterprise.util.Nonbinding;
+import javax.ws.rs.NameBinding;
 
 /**
  * Secured Annotation
@@ -14,11 +17,12 @@ import javax.interceptor.InterceptorBinding;
  * @author matafe@gmail.com
  */
 @Inherited
-@InterceptorBinding
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
+@NameBinding
+@Target({ TYPE, METHOD })
+@Retention(RUNTIME)
 public @interface Secured {
 
+    @Nonbinding
     Role value() default Role.USER;
 
     enum Role {

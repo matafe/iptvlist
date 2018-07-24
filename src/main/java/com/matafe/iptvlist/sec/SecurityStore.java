@@ -5,9 +5,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+
+import org.apache.commons.collections4.map.PassiveExpiringMap;
 
 /**
  * Security Store
@@ -17,7 +20,14 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class SecurityStore {
 
+    private static final int TIME_TO_EXPIRE_IN_MINUTES = 30;
+
+    // username and user
     private Map<String, User> users = new ConcurrentHashMap<>();
+
+    // token and user
+    PassiveExpiringMap<String, User> loggerUsers = new PassiveExpiringMap<>(TIME_TO_EXPIRE_IN_MINUTES,
+	    TimeUnit.MINUTES);
 
     @PostConstruct
     public void init() {
@@ -78,6 +88,27 @@ public class SecurityStore {
 	found.setActive(false);
 	found.setLastUpdated(Calendar.getInstance());
 	users.put(username, found);
+    }
+
+    public void addLogged(User user, String token) {
+	user.setLoginTime(Calendar.getInstance());
+	loggerUsers.put(token, user);
+    }
+
+    public User getAndUpdateLogged(String token) {
+	User user = loggerUsers.get(token);
+	// not found or expired!
+	if (user == null) {
+	    throw new TokenExpiredException(token, String.valueOf(TIME_TO_EXPIRE_IN_MINUTES));
+	}
+
+	// inactivated
+	if (!user.isActive()) {
+	    throw new UserNotFoundException(user.getUsername());
+	}
+	// update it
+	loggerUsers.put(token, user);
+	return user;
     }
 
 }
