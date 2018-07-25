@@ -37,6 +37,11 @@
 
 		<dependency>
 			<groupId>io.thorntail</groupId>
+			<artifactId>ejb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.thorntail</groupId>
 			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
