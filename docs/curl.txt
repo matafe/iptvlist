@@ -5,7 +5,7 @@ Management
 Users
 
 # Login. Return the Access Token
-curl -i -X POST -H "Content-Type: application/json" -d '{"username":"admin","password":"secret"}' http://localhost:8080/iptvlist/resources/user/login
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin","password":"secret"}' http://localhost:8080/iptvlist/resources/user/login
 
 # Find all users
 curl -i -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user
@@ -24,10 +24,10 @@ curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/j
 curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"username":"test","password":"123456","fullname":"Test","validUntil":"2018-08-01 00:00:00"}' http://localhost:8080/iptvlist/resources/user
 
 # Inactive an user
-curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/admin/inactive
+curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/test/inactive
 
 # Active an user until 25-12-2018 20:30:00
-curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/admin/active/2018/12/25/20/30/00
+curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/test/active/2018/12/25/20/30/00
 
 ===================================================================================
 

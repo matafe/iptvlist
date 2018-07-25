@@ -18,7 +18,7 @@ import com.matafe.iptvlist.Message;
 public class SecurityAuthenticator {
 
     @Inject
-    private SecurityStore securityStore;
+    private SecurityManager securityManager;
 
     @Inject
     private SecurityUtil securityUtil;
@@ -33,7 +33,7 @@ public class SecurityAuthenticator {
 
 	if (!isBlank(username) && password != null) {
 	    try {
-		User found = securityStore.find(username);
+		User found = securityManager.find(username);
 		if (!found.isActive()) {
 		    throw new UserNotFoundException(username);
 		}
@@ -60,7 +60,7 @@ public class SecurityAuthenticator {
     }
 
     public String generateToken(User user) {
-	// JWT
+	// JWT ?
 	String tokenKey = user.getUsername().concat(user.getPassword())
 		.concat(String.valueOf(Calendar.getInstance().getTimeInMillis()));
 
@@ -68,6 +68,6 @@ public class SecurityAuthenticator {
     }
 
     public void validateToken(String token) {
-	securityStore.getAndUpdateLogged(token);
+	securityManager.getAndUpdateLogged(token);
     }
 }

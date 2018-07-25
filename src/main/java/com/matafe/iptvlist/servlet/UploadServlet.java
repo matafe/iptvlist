@@ -12,8 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.matafe.iptvlist.m3u.M3UItemStore;
 import com.matafe.iptvlist.sec.SecurityAuthenticator;
+import com.matafe.iptvlist.sec.ejb.CleanupGuardTimerBean;
 
 /**
  * Upload Servlet.
@@ -26,6 +30,9 @@ import com.matafe.iptvlist.sec.SecurityAuthenticator;
 	maxRequestSize = 1024 * 1024 * 10) // 10MB
 public class UploadServlet extends HttpServlet {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -62,7 +69,7 @@ public class UploadServlet extends HttpServlet {
 		// InputStreamReader(part.getInputStream())).lines()
 		// .collect(Collectors.joining("\n"));
 		is = part.getInputStream();
-		System.out.println(is);
+		//System.out.println(is);
 	    }
 	}
 
@@ -83,7 +90,10 @@ public class UploadServlet extends HttpServlet {
 
     private String getFileName(Part part) {
 	String contentDisp = part.getHeader("content-disposition");
-	System.out.println("content-disposition header= " + contentDisp);
+	System.out.println("content-disposition header= " + contentDisp);	
+	
+	logger.info("> content-disposition header= " + contentDisp);
+
 	String[] tokens = contentDisp.split(";");
 	for (String token : tokens) {
 	    if (token.trim().startsWith("filename")) {

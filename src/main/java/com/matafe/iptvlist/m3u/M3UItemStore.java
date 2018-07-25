@@ -2,6 +2,7 @@ package com.matafe.iptvlist.m3u;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,7 +82,10 @@ public class M3UItemStore {
 	    sourceFile = new File(property);
 	} else {
 	    // not shipped!
-	    sourceFile = new File(getClass().getClassLoader().getResource("source-playlist.m3u").getFile());
+	    URL resource = getClass().getClassLoader().getResource("source-playlist.m3u");
+	    if (resource != null) {
+		sourceFile = new File(resource.getFile());
+	    }
 	}
 
 	return sourceFile;

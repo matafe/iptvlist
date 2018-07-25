@@ -1,4 +1,4 @@
-package com.matafe.iptvlist.sec;
+package com.matafe.iptvlist.sec.filter;
 
 import java.io.IOException;
 
@@ -15,6 +15,10 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
+
+import com.matafe.iptvlist.sec.Secured;
+import com.matafe.iptvlist.sec.SecurityAuthenticator;
+import com.matafe.iptvlist.sec.Secured.Role;
 
 @Provider
 @Secured

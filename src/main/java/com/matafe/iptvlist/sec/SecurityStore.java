@@ -58,13 +58,17 @@ public class SecurityStore {
     }
 
     public void add(User user) {
-	try {
-	    find(user.getUsername());
-	    throw new UserAlreadyExistsException(user.getUsername());
-	} catch (UserNotFoundException e) {
-	    user.setLastUpdated(Calendar.getInstance());
-	    users.put(user.getUsername(), user);
-	}
+	users.put(user.getUsername(), user);
+    }
+
+    public void update(User user) {
+	User found = find(user.getUsername());
+	found.setActive(user.isActive());
+	found.setValidUntil(user.getValidUntil());
+	found.setFullname(user.getFullname());
+	found.setLastUpdated(user.getLastUpdated());
+
+	users.put(user.getUsername(), found);
     }
 
     public List<User> findAll() {
@@ -75,23 +79,7 @@ public class SecurityStore {
 	users.remove(username);
     }
 
-    public void activate(String username, Calendar validUntil) {
-	User found = find(username);
-	found.setActive(true);
-	found.setLastUpdated(Calendar.getInstance());
-	found.setValidUntil(validUntil);
-	users.put(username, found);
-    }
-
-    public void inactivate(String username) {
-	User found = find(username);
-	found.setActive(false);
-	found.setLastUpdated(Calendar.getInstance());
-	users.put(username, found);
-    }
-
     public void addLogged(User user, String token) {
-	user.setLoginTime(Calendar.getInstance());
 	loggerUsers.put(token, user);
     }
 

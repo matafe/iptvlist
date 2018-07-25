@@ -31,7 +31,7 @@ public class DateUtil {
     }
 
     public static String format(Calendar calendar) {
-	return DATE_TIME_FORMAT.format(calendar);
+	return DATE_TIME_FORMAT.format(calendar.getTime());
     }
 
     public static String prettyFormat(Calendar calendar) {

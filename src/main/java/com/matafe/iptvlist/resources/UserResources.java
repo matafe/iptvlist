@@ -1,6 +1,8 @@
 package com.matafe.iptvlist.resources;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,7 +20,7 @@ import javax.ws.rs.core.Response;
 import com.matafe.iptvlist.sec.Credentials;
 import com.matafe.iptvlist.sec.Secured;
 import com.matafe.iptvlist.sec.SecurityAuthenticator;
-import com.matafe.iptvlist.sec.SecurityStore;
+import com.matafe.iptvlist.sec.SecurityManager;
 import com.matafe.iptvlist.sec.User;
 import com.matafe.iptvlist.util.DateUtil;
 
@@ -31,13 +33,14 @@ import com.matafe.iptvlist.util.DateUtil;
 public class UserResources {
 
     @Inject
-    SecurityStore securityStore;
-
-    @Inject
     SecurityAuthenticator authenticator;
 
+    @Inject
+    private SecurityManager securityManager;
+
     @POST
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("login")
     public Response login(Credentials credentials) {
 
@@ -48,9 +51,9 @@ public class UserResources {
 
 	    // Generate a token for the user
 	    String token = authenticator.generateToken(user);
-	    
+
 	    // Save the token on the server side.
-	    securityStore.addLogged(user, token);
+	    securityManager.addLogged(user, token);
 
 	    // Return the token on the response
 	    return Response.ok(token).build();
@@ -64,7 +67,9 @@ public class UserResources {
     @Secured(Secured.Role.ADMIN)
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> findUsers() {
-	return securityStore.findAll();
+	List<User> users = securityManager.findAll();
+	Collections.sort(users, Comparator.comparing(User::getLastUpdated));
+	return users;
     }
 
     @POST
@@ -72,7 +77,7 @@ public class UserResources {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response addUser(final User user) {
-	securityStore.add(user);
+	securityManager.add(user);
 	return Response.ok("User " + user.getUsername() + " added.").build();
     }
 
@@ -81,7 +86,7 @@ public class UserResources {
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findUser(@PathParam("username") String username) {
-	return Response.ok(securityStore.find(username)).build();
+	return Response.ok(securityManager.find(username)).build();
     }
 
     @DELETE
@@ -89,7 +94,7 @@ public class UserResources {
     @Path("{username}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response removeUser(@PathParam("username") String username) {
-	securityStore.remove(username);
+	securityManager.remove(username);
 	return Response.ok("User " + username + " removed.").build();
     }
 
@@ -101,7 +106,7 @@ public class UserResources {
 	    @PathParam("month") Integer month, @PathParam("day") Integer day, @PathParam("hour") Integer hour,
 	    @PathParam("min") Integer min, @PathParam("sec") Integer sec) {
 	Calendar dateTime = DateUtil.parseCalendar(year, (month - 1), day, hour, min, sec);
-	securityStore.activate(username, dateTime);
+	securityManager.activate(username, dateTime);
 	return Response.ok("User " + username + " activated until " + DateUtil.prettyFormat(dateTime)).build();
     }
 
@@ -110,7 +115,7 @@ public class UserResources {
     @Path("{username}/inactive")
     @Produces(MediaType.TEXT_PLAIN)
     public Response inactivateUser(@PathParam("username") String username) {
-	securityStore.inactivate(username);
+	securityManager.inactivate(username);
 	return Response.ok("User " + username + " inactivated.").build();
     }
 

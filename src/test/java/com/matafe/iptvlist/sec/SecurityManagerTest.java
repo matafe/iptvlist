@@ -3,7 +3,7 @@ package com.matafe.iptvlist.sec;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,13 +13,14 @@ import org.junit.Test;
  * 
  * @author matafe@gmail.com
  */
-public class SecurityStoreTest {
+public class SecurityManagerTest {
 
-    private SecurityStore securityStore;
+    private SecurityManager securityManager;
 
     @Before
     public void setUp() throws Exception {
-	this.securityStore = new SecurityStore();
+	this.securityManager = new SecurityManager();
+	this.securityManager.setStore(new SecurityStore());
     }
 
     @Test
@@ -28,16 +29,16 @@ public class SecurityStoreTest {
 	user.setUsername("user0");
 	user.setPassword("passwd0");
 
-	securityStore.add(user);
+	securityManager.add(user);
 
-	User found = securityStore.find(user.getUsername());
+	User found = securityManager.find(user.getUsername());
 
 	assertThat(found, equalTo(user));
     }
 
     @Test(expected = UserNotFoundException.class)
     public void testFindNotFound() {
-	securityStore.find("notexist");
+	securityManager.find("notexist");
     }
 
     @Test
@@ -47,7 +48,7 @@ public class SecurityStoreTest {
 	user.setUsername("user0");
 	user.setPassword("passwd0");
 
-	securityStore.add(user);
+	securityManager.add(user);
     }
 
     @Test(expected = UserAlreadyExistsException.class)
@@ -57,8 +58,8 @@ public class SecurityStoreTest {
 	user.setUsername("user0");
 	user.setPassword("passwd0");
 
-	securityStore.add(user);
-	securityStore.add(user);
+	securityManager.add(user);
+	securityManager.add(user);
     }
 
     @Test
@@ -69,10 +70,10 @@ public class SecurityStoreTest {
 	    user.setUsername("user" + i);
 	    user.setPassword("passwd" + i);
 
-	    securityStore.add(user);
+	    securityManager.add(user);
 	}
 
-	Collection<User> users = securityStore.findAll();
+	List<User> users = securityManager.findAll();
 	assertThat(users.size(), equalTo(num));
     }
 
