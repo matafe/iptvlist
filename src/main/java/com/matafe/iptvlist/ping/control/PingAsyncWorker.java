@@ -1,4 +1,4 @@
-package com.matafe.iptvlist.heartbeat.ejb;
+package com.matafe.iptvlist.ping.control;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -6,26 +6,29 @@ import java.net.URL;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Stateless
-public class HeartBeatAsyncBean {
+public class PingAsyncWorker {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final Long TIME = 10000L;
 
-    private static final String UNKNOW = "UNKNOW";
-
     @Asynchronous
-    public String fireAsync(String theUrl) {
+    public void fireAsync(String theUrl) {
 	try {
 	    Thread.sleep(TIME);
-	    return String.valueOf(getResponseCode(theUrl));
+	    int responseCode = getResponseCode(theUrl);
+	    logger.info("Executed. result: " + responseCode);
 	} catch (InterruptedException e) {
-	    System.out.println("Could not sleep for " + TIME + " millis");
+	    logger.error("Could not sleep for " + TIME + " millis");
 	    e.printStackTrace();
 	} catch (Exception e) {
-	    System.out.println("Could not connect to " + theUrl);
+	    logger.error("Could not connect to " + theUrl);
 	    e.printStackTrace();
 	}
-	return UNKNOW;
     }
 
     private int getResponseCode(String theUrl) {
