@@ -19,9 +19,11 @@ public class PingResource {
     UriInfo uriInfo;
 
     @GET
-    public String ping(@QueryParam("url") String callBackUrl) {
-	pingAsyncWorker.fireAsync(callBackUrl);
+    public String ping(@QueryParam("url") String url) {
+	String callBack = url != null ? url : "https://dormenao.herokuapp.com/resources/ping";
+	pingAsyncWorker.fireAsync(callBack);
 	return "pong from: " + uriInfo.getBaseUri().toString();
+
     }
 
 }
