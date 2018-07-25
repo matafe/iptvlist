@@ -68,7 +68,7 @@ public class UserResources {
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> findUsers() {
 	List<User> users = securityManager.findAll();
-	Collections.sort(users, Comparator.comparing(User::getLastUpdated));
+	//Collections.sort(users, Comparator.comparing(User::getLastUpdated));
 	return users;
     }
 
