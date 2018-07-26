@@ -20,7 +20,6 @@ public class ConnectionTest {
     }
 
     @Test
-    @Ignore
     public void testConnection() {
 	String channel = System.getenv("IPTV_CHANNEL");
 	PrintStream output = System.out;
