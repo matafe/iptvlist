@@ -21,8 +21,8 @@ public class ConnectionTest {
 
     @Test
     @Ignore
-    public void test() {
-	String channel = "";
+    public void testConnection() {
+	String channel = System.getenv("IPTV_CHANNEL");
 	PrintStream output = System.out;
 	try {
 	    InputStream inputStream = httpUtil.getAsInputStream(channel);

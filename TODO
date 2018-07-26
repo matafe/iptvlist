@@ -1,6 +1,8 @@
 TODO
+DESC|IMP|TEST
 ==========
-- Improve Sec.
-- Thread to inactivate
-- Use a database
-- UX
+Improve Sec.|YES|NO
+Thread to inactivate|YES|NO
+Use a database|NO|NO
+UX|NO|NO
+Backup list|NO|NO

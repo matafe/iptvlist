@@ -9,6 +9,11 @@ import javax.ejb.Stateless;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Ping Worker
+ * 
+ * @author matafe@gmail.com
+ */
 @Stateless
 public class PingAsyncWorker {
 

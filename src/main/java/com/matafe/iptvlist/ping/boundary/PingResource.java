@@ -9,6 +9,11 @@ import javax.ws.rs.core.UriInfo;
 
 import com.matafe.iptvlist.ping.control.PingAsyncWorker;
 
+/**
+ * Ping Resources
+ * 
+ * @author matafe@gmail.com
+ */
 @Path("ping")
 public class PingResource {
 

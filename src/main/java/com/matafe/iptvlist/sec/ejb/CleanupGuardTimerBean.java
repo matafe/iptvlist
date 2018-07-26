@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 import com.matafe.iptvlist.sec.SecurityManager;
 import com.matafe.iptvlist.util.DateUtil;
 
+/**
+ * Clenup expired users.
+ * 
+ * @author matafe@gmail.com
+ */
 @Singleton
 public class CleanupGuardTimerBean {
 
@@ -20,22 +25,13 @@ public class CleanupGuardTimerBean {
     @Inject
     private SecurityManager securityManager;
 
-    @Schedule(second = "*", minute = "*", hour = "6,18", persistent = false, info = "Every 6am and 6pm every day timer")
-    // For testing purposes
-     //@Schedule(second = "*/30", minute = "*", hour = "*", persistent = false, info
-     //= "Every 30 second timer")
+    @Schedule(second = "0", minute = "0", hour = "6,18", persistent = false, info = "Every 6am and 6pm every day timer")
     public void doInactivation() {
 
-	System.out.println("###########");//temp
-	System.out.println("###########");
-	System.out.println("###########");
 	logger.info("Starting cleanup now... {}", DateUtil.format(Calendar.getInstance()));
 
 	securityManager.inactiveExpiredUsers();
 
 	logger.info("Cleanup finished... {}", DateUtil.format(Calendar.getInstance()));
-	System.out.println("###########");
-	System.out.println("###########");
-	System.out.println("###########");
     }
 }
