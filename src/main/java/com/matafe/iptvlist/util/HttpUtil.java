@@ -1,6 +1,5 @@
 package com.matafe.iptvlist.util;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,18 +22,18 @@ public class HttpUtil {
 	    conn.setRequestMethod("GET");
 	    conn.setRequestProperty("content-type", "video/mp4; charset=utf-8");
 	    conn.setRequestProperty("User-Agent", "VLC/3.0.0-git LibVLC/3.0.0-git");
-	    conn.setRequestProperty("Accept", "*/*");	    
+	    conn.setRequestProperty("Accept", "*/*");
 	    int state = conn.getResponseCode();
-	    if (state < 400) {
-		in = conn.getInputStream();
-	    } else {
-		in = conn.getErrorStream();
-	    }
-	    in = new BufferedInputStream(in);
+	    // if (state < 400) {
+	    in = conn.getInputStream();
+	    // } else {
+	    // in = conn.getErrorStream();
+	    // }
+	    // in = new BufferedInputStream(in);
+	    return in;
 	} catch (Exception e) {
 	    throw new RuntimeException("Failed to connect to url", e);
 	}
-	return in;
     }
 
     public String get(String theUrl) {
