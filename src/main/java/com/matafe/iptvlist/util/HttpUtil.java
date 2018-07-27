@@ -23,9 +23,16 @@ public class HttpUtil {
 	    URL url = new URL(theUrl);
 	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	    conn.setRequestMethod("GET");
-	    conn.setRequestProperty("content-type", "video/mp4; charset=utf-8");
+	    //conn.setRequestProperty("content-type", "video/mp4; charset=utf-8");
+	    conn.setRequestProperty("Content-Type", "video/mp2t");
 	    conn.setRequestProperty("User-Agent", "VLC/3.0.0-git LibVLC/3.0.0-git");
 	    conn.setRequestProperty("Accept", "*/*");
+	    
+	    Map<String, List<String>> rp = conn.getRequestProperties();
+	    Set<String> rpk = rp.keySet();
+	    for (String k : rpk)
+	      System.out.println("ReqKey: " + k + "  ReqValue: " + rp.get(k));
+	    
 	    Map<String, List<String>> hdrs = conn.getHeaderFields();
 	    Set<String> hdrKeys = hdrs.keySet();
 	    for (String k : hdrKeys)
