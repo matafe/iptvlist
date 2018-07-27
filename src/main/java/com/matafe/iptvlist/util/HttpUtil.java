@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,11 +24,18 @@ public class HttpUtil {
 	try {
 	    URL url = new URL(theUrl);
 	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	    conn.setDoOutput(true);
 	    conn.setRequestMethod("GET");
 	    //conn.setRequestProperty("content-type", "video/mp4; charset=utf-8");
-	    conn.setRequestProperty("Content-Type", "video/mp2t");
+	    conn.setRequestProperty("Content-Type", "application/octet-stream");
 	    conn.setRequestProperty("User-Agent", "VLC/3.0.0-git LibVLC/3.0.0-git");
-	    conn.setRequestProperty("Accept", "*/*");
+	    //conn.setRequestProperty("Accept", "*/*");
+	    
+	    String[] split = theUrl.split("/");
+	    String username = split[split.length-3];
+	    String password = split[split.length-2];
+	    String encoded = Base64.getEncoder().encodeToString((username+":"+password).getBytes(StandardCharsets.UTF_8));
+	    conn.setRequestProperty("Authorization", "Basic "+encoded);
 	    
 	    Map<String, List<String>> rp = conn.getRequestProperties();
 	    Set<String> rpk = rp.keySet();
