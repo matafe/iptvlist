@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * HTTP Utils
@@ -23,7 +26,14 @@ public class HttpUtil {
 	    conn.setRequestProperty("content-type", "video/mp4; charset=utf-8");
 	    conn.setRequestProperty("User-Agent", "VLC/3.0.0-git LibVLC/3.0.0-git");
 	    conn.setRequestProperty("Accept", "*/*");
+	    Map<String, List<String>> hdrs = conn.getHeaderFields();
+	    Set<String> hdrKeys = hdrs.keySet();
+	    for (String k : hdrKeys)
+	      System.out.println("Key: " + k + "  Value: " + hdrs.get(k));
+	    
 	    int state = conn.getResponseCode();
+	    System.out.println("theUrl: " + theUrl + "  state: " + state);
+	    
 	    // if (state < 400) {
 	    in = conn.getInputStream();
 	    // } else {
