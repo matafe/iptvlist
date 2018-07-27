@@ -29,7 +29,8 @@ public class HttpUtil {
 	    //conn.setRequestProperty("content-type", "video/mp4; charset=utf-8");
 	    conn.setRequestProperty("Content-Type", "application/octet-stream");
 	    conn.setRequestProperty("User-Agent", "VLC/3.0.0-git LibVLC/3.0.0-git");
-	    //conn.setRequestProperty("Accept", "*/*");
+	    conn.setRequestProperty("Accept", "*/*");
+	    conn.setRequestProperty("Debug", "true");
 	    
 	    String[] split = theUrl.split("/");
 	    String username = split[split.length-3];
