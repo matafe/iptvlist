@@ -99,7 +99,7 @@ public class IptvResources {
 	    public void write(OutputStream output) throws IOException, WebApplicationException {
 		try {
 		    InputStream inputStream = httpUtil.getAsInputStream(urlLocator.locate(channel));
-		    byte[] buffer = new byte[2048];
+		    byte[] buffer = new byte[1024];
 		    int length;
 		    while ((length = inputStream.read(buffer)) != -1) {
 			output.write(buffer, 0, length);
