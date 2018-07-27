@@ -33,5 +33,7 @@ curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/r
 
 IPTV List
 
-curl -i http://localhost:8080/iptvlist/resources/user/test/123456
+curl -i http://localhost:8080/iptvlist/resources/user/test/123456T
+
+curl -i http://localhost:8080/iptvlist/resources/iptv/count
 

@@ -1,6 +1,8 @@
 package com.matafe.iptvlist.m3u;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.matafe.iptvlist.m3u.parser.IM3UParser;
 import com.matafe.iptvlist.m3u.parser.M3UParserFactory;
+import com.matafe.iptvlist.util.StringUtil;
 
 /**
  * M3U Item Cache
@@ -37,20 +40,23 @@ public class M3UItemStore {
     @PostConstruct
     public void initialize() {
 	try {
-	    load(getSourceFile());
+	    load(getSourceFileName(), getSourceInputStream());
 	} catch (Exception e) {
 	    logger.error("Failed to load the source playlist", e);
 	}
-
     }
 
-    public void load(File sourceFile) {
-	IM3UParser parser = parserFactory.getParserForFile(sourceFile);
-	M3UPlaylist playlist = parser.read(sourceFile);
-	for (M3UItem item : playlist.getItems()) {
-	    cache.put(item.getName(), item);
-	}
+    private String getSourceFileName() {
+	return isSourceFileProvided() ? System.getProperty("IPTV_SOURCE_FILE_PATH") : "source-playlist.m3u";
     }
+
+    // public void load(File sourceFile) {
+    // IM3UParser parser = parserFactory.getParserForFile(sourceFile);
+    // M3UPlaylist playlist = parser.read(sourceFile);
+    // for (M3UItem item : playlist.getItems()) {
+    // cache.put(item.getName(), item);
+    // }
+    // }
 
     public void load(String filename, InputStream is) {
 	IM3UParser parser = parserFactory.getParserForFile(new File(filename));
@@ -67,28 +73,51 @@ public class M3UItemStore {
     public int realod() {
 	cache.clear();
 	try {
-	    load(getSourceFile());
+	    load(getSourceFileName(), getSourceInputStream());
 	} catch (Exception e) {
-	    logger.error("Failed to load the source playlist", e);
+	    logger.error("Failed to reload the source playlist", e);
 	}
 
 	return count();
     }
 
-    private File getSourceFile() {
-	File sourceFile = null;
+    // private File getSourceFile() {
+    // File sourceFile = null;
+    // String property = System.getProperty("IPTV_SOURCE_FILE_PATH");
+    // if (property != null) {
+    // sourceFile = new File(property);
+    // } else {
+    // // not shipped!
+    // URL resource =
+    // getClass().getClassLoader().getResource("source-playlist.m3u");
+    // if (resource != null) {
+    // sourceFile = new File(resource.getFile());
+    // }
+    // }
+    //
+    // return sourceFile;
+    // }
+
+    private boolean isSourceFileProvided() {
+	return !StringUtil.isBlank(System.getProperty("IPTV_SOURCE_FILE_PATH"));
+    }
+
+    private InputStream getSourceInputStream() {
 	String property = System.getProperty("IPTV_SOURCE_FILE_PATH");
-	if (property != null) {
-	    sourceFile = new File(property);
-	} else {
-	    // not shipped!
-	    URL resource = getClass().getClassLoader().getResource("source-playlist.m3u");
-	    if (resource != null) {
-		sourceFile = new File(resource.getFile());
+	InputStream is = null;
+	try {
+	    if (property != null) {
+		is = new FileInputStream(new File(property));
+	    } else {
+		// if not shipped!
+		URL resource = getClass().getClassLoader().getResource("source-playlist.m3u");
+		is = resource.openStream();
 	    }
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
 
-	return sourceFile;
+	return is;
     }
 
     public M3UItem getM3UItem(String name) {

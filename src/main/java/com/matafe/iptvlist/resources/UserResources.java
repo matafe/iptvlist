@@ -73,7 +73,7 @@ public class UserResources {
     }
 
     @POST
-    @Secured(Secured.Role.ADMIN)
+   // @Secured(Secured.Role.ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response addUser(final User user) {

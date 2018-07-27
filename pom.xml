@@ -6,10 +6,18 @@
 	<artifactId>iptvlist</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-
+	<name>iptvlist</name>
+	<url>http://maven.apache.org</url>	
+	<developers>
+		<developer>
+			<name>Mauricio T. Ferraz</name>
+		</developer>
+	</developers>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<timestamp>${maven.build.timestamp}</timestamp>
+   		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>				
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 		<jee.version>8.0</jee.version>
@@ -20,7 +28,7 @@
 		<hamcrest.version>1.3</hamcrest.version>
 		<junit.version>4.12</junit.version>
 	</properties>
-
+<!-- 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -32,9 +40,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+ -->
 	<dependencies>
-
+<!-- 
 		<dependency>
 			<groupId>io.thorntail</groupId>
 			<artifactId>ejb</artifactId>
@@ -48,7 +56,7 @@
 			<groupId>io.thorntail</groupId>
 			<artifactId>cdi</artifactId>
 		</dependency>
-
+ -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
@@ -110,14 +118,17 @@
 	<build>
 		<finalName>iptvlist</finalName>
 		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
+		   <resource>
+		      <directory>src/main/resources</directory>
+		      <filtering>true</filtering>
+		<!--  
 				<excludes>
 					<exclude>source-playlist.xml</exclude>
 					<exclude>source-playlist.m3u</exclude>
 				</excludes>
-			</resource>
-		</resources>
+		-->
+		   </resource>
+		</resources>		
 		<plugins>
 			<plugin>
 				<groupId>io.thorntail</groupId>

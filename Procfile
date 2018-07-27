@@ -1,1 +1,1 @@
-web: java -Xms64m -Xmx128m -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=128m -Djava.net.preferIPv4Stack=true -Dswarm.http.port=$PORT -jar target/iptvlist-thorntail.jar
+web: java -agentlib:jdwp=transport=dt_socket,server=y,address=9090,suspend=n -Xms64m -Xmx128m -Dfile.encoding=UTF-8 -XX:MaxMetaspaceSize=128m -Djava.net.preferIPv4Stack=true -Dswarm.http.port=$PORT -jar target/iptvlist-thorntail.jar
