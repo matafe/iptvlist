@@ -48,13 +48,13 @@ public class PlaylistGenerator {
 	content.append(lines[0]);
 	content.append("\n");
 	for (M3UItem item : playlist.getItems()) {
-	    String line1 = lines[1].replaceAll("\\$\\{channelname\\}", item.getTvgName());
+	    String line1 = lines[1].replaceAll("\\$\\{channelname\\}", item.getName());
 	    content.append(line1);
 	    content.append("\n");
 	    String line2 = lines[2].replaceAll("\\$\\{uri\\}", resourceUri);
 	    line2 = line2.replaceAll("\\$\\{username\\}", username);
 	    line2 = line2.replaceAll("\\$\\{password\\}", password);
-	    line2 = line2.replaceAll("\\$\\{channelname\\}", item.getTvgName());
+	    line2 = line2.replaceAll("\\$\\{channelname\\}", item.getName());
 	    content.append(line2);
 	    content.append("\n");
 	}
@@ -76,13 +76,13 @@ public class PlaylistGenerator {
 	content.append(lines[0]);
 	content.append("\n");
 	for (M3UItem item : targetPlaylist.getItems()) {
-	    String line1 = lines[1].replaceAll("\\$\\{channelname\\}", item.getTvgName());
+	    String line1 = lines[1].replaceAll("\\$\\{channelname\\}", item.getName());
 	    content.append(line1);
 	    content.append("\n");
 	    String line2 = lines[2].replaceAll("\\$\\{uri\\}", resourceUri);
 	    line2 = line2.replaceAll("\\$\\{username\\}", username);
 	    line2 = line2.replaceAll("\\$\\{password\\}", password);
-	    line2 = line2.replaceAll("\\$\\{channelname\\}", item.getTvgName());
+	    line2 = line2.replaceAll("\\$\\{channelname\\}", item.getName());
 	    content.append(line2);
 	    content.append("\n");
 	}

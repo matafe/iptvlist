@@ -70,7 +70,7 @@ public class PlaylistResources {
 
 	M3UPlaylist playlist = playlistGenerator.createTargetPlaylist(username, itemStore.getSourcePlaylist());
 
-	String resourceUri = uriInfo.getBaseUri().toString().concat("iptv");
+	String resourceUri = uriInfo.getBaseUri().toString().concat("playlist");
 
 	String m3uFileContent = playlistGenerator.generateM3uFileContent(username, password, playlist, resourceUri);
 

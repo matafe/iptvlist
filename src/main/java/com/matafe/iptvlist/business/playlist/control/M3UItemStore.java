@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -40,13 +39,8 @@ public class M3UItemStore {
     @Inject
     private M3UParserFactory parserFactory;
 
-    @PostConstruct
     public void initialize() {
-	try {
-	    load(getSourceFileName(), getSourceInputStream());
-	} catch (Exception e) {
-	    logger.error("Failed to load the source playlist", e);
-	}
+	load(getSourceFileName(), getSourceInputStream());
     }
 
     private String getSourceFileName() {
@@ -113,11 +107,14 @@ public class M3UItemStore {
 		is = new FileInputStream(new File(property));
 	    } else {
 		// if not shipped!
-		is = getClass().getResourceAsStream("source-playlist.m3u");
-		System.out.println("InputStream: " + is);
+		is = getClass().getClassLoader().getResourceAsStream("source-playlist.m3u");
 	    }
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    logger.error("Failed to load the source playlist", e);
+	}
+
+	if (is == null) {
+	    logger.error("Could not find any source playlist to load!");
 	}
 
 	return is;
@@ -138,7 +135,7 @@ public class M3UItemStore {
     public M3UItem getItem(String channelName) {
 	M3UItem item = cache.get(channelName);
 	if (item == null) {
-	    throw new ApplicationException(new Message.Builder().text("Item {} not found!").build(), channelName);
+	    throw new ApplicationException(new Message.Builder().text("Item {0} not found!").build(), channelName);
 	}
 	return item;
 

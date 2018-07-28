@@ -37,3 +37,6 @@ curl -i https://iptvapp.herokuapp.com/resources/user/test/123456T
 
 curl -i https://iptvapp.herokuapp.com/resources/playlist/count
 
+
+curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"name":"AMC","url":"http://newamc.com"}' https://localhost:8080/resources/playlist/updateChannel
+
