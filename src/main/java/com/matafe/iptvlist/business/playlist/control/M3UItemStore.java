@@ -110,9 +110,12 @@ public class M3UItemStore {
 	    } else {
 		// if not shipped!
 		String fileName = "source-playlist.m3u";
-		is = getClass().getClassLoader().getResourceAsStream(fileName);
+		is = M3UItemStore.class.getResourceAsStream(fileName);
 		if (is == null) {
-		    is = ClassLoader.getSystemResourceAsStream(fileName);
+		    is = getClass().getClassLoader().getResourceAsStream(fileName);
+		    if (is == null) {
+			is = ClassLoader.getSystemResourceAsStream(fileName);
+		    }
 		}
 	    }
 	} catch (IOException e) {
