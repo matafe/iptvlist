@@ -28,10 +28,10 @@ public class CleanupGuardTimerBean {
     @Schedule(second = "0", minute = "0", hour = "6,18", persistent = false, info = "Every 6am and 6pm every day timer")
     public void doInactivation() {
 
-	logger.info("Starting cleanup now... {}", DateUtil.format(Calendar.getInstance()));
+	logger.info("Starting cleanup now.... {}", DateUtil.format(Calendar.getInstance()));
 
 	securityManager.inactiveExpiredUsers();
 
-	logger.info("Cleanup finished... {}", DateUtil.format(Calendar.getInstance()));
+	logger.info("Cleanup finished.... {}", DateUtil.format(Calendar.getInstance()));
     }
 }
