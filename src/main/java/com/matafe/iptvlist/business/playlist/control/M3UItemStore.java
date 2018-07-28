@@ -56,10 +56,12 @@ public class M3UItemStore {
     // }
 
     public void load(String filename, InputStream is) {
-	IM3UParser parser = parserFactory.getParserForFile(new File(filename));
-	M3UPlaylist playlist = parser.read(is);
-	for (M3UItem item : playlist.getItems()) {
-	    cache.put(item.getName(), item);
+	if (is != null) {
+	    IM3UParser parser = parserFactory.getParserForFile(new File(filename));
+	    M3UPlaylist playlist = parser.read(is);
+	    for (M3UItem item : playlist.getItems()) {
+		cache.put(item.getName(), item);
+	    }
 	}
     }
 
@@ -107,7 +109,11 @@ public class M3UItemStore {
 		is = new FileInputStream(new File(property));
 	    } else {
 		// if not shipped!
-		is = getClass().getClassLoader().getResourceAsStream("source-playlist.m3u");
+		String fileName = "source-playlist.m3u";
+		is = getClass().getClassLoader().getResourceAsStream(fileName);
+		if (is == null) {
+		    is = ClassLoader.getSystemResourceAsStream(fileName);
+		}
 	    }
 	} catch (IOException e) {
 	    logger.error("Failed to load the source playlist", e);
