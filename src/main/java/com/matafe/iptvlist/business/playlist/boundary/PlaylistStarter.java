@@ -26,6 +26,7 @@ public class PlaylistStarter {
 
     @PostConstruct
     public void init() {
+	System.out.println("Starting the playlist... loading items...");
 	logger.info("Starting the playlist... loading items");
 	store.initialize();
     }

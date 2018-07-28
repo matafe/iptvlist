@@ -7,7 +7,6 @@ import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -90,22 +89,6 @@ public class MailSender {
 	    throw new ApplicationException(message, e);
 	}
 
-    }
-
-    private static class SMTPAuthenticator extends Authenticator {
-
-	private final String username;
-	private final String password;
-
-	public SMTPAuthenticator(final String username, final String password) {
-	    this.username = username;
-	    this.password = password;
-	}
-
-	@Override
-	public PasswordAuthentication getPasswordAuthentication() {
-	    return new PasswordAuthentication(username, password);
-	}
     }
 
     public String getMailSmtpHost() {
