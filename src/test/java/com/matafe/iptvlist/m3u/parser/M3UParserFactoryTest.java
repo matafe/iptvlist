@@ -11,9 +11,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.matafe.iptvlist.m3u.parser.IM3UParser;
-import com.matafe.iptvlist.m3u.parser.M3UParserFactory;
-import com.matafe.iptvlist.m3u.parser.M3UXmlParser;
+import com.matafe.iptvlist.business.playlist.control.parser.IM3UParser;
+import com.matafe.iptvlist.business.playlist.control.parser.M3UParserFactory;
+import com.matafe.iptvlist.business.playlist.control.parser.M3UXmlParser;
 
 import mockit.integration.junit4.JMockit;
 

@@ -8,6 +8,8 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.matafe.iptvlist.business.sec.control.SecurityUtil;
+
 /**
  * Security Util Test
  * 

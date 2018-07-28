@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.matafe.iptvlist.m3u.M3UPlaylist;
+import com.matafe.iptvlist.business.playlist.control.parser.IM3UParser;
+import com.matafe.iptvlist.business.playlist.control.parser.M3UParser;
+import com.matafe.iptvlist.business.playlist.entity.M3UPlaylist;
 
 /**
  * M3U Parser Unit Test For New Lists

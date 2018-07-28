@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.matafe.iptvlist.ApplicationException;
-import com.matafe.iptvlist.util.HttpUtil;
+import com.matafe.iptvlist.business.ApplicationException;
+import com.matafe.iptvlist.business.util.HttpUtil;
 
 public class ConnectionTest {
 

@@ -8,6 +8,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.matafe.iptvlist.business.sec.boundary.SecurityManager;
+import com.matafe.iptvlist.business.sec.control.SecurityStore;
+import com.matafe.iptvlist.business.sec.control.UserAlreadyExistsException;
+import com.matafe.iptvlist.business.sec.control.UserNotFoundException;
+import com.matafe.iptvlist.business.sec.entity.User;
+
 /**
  * Security Store Test
  * 

@@ -8,13 +8,18 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.matafe.iptvlist.m3u.M3UItem;
-import com.matafe.iptvlist.m3u.M3UPlaylist;
+import com.matafe.iptvlist.business.playlist.control.parser.IM3UParser;
+import com.matafe.iptvlist.business.playlist.control.parser.M3UParser;
+import com.matafe.iptvlist.business.playlist.entity.M3UItem;
+import com.matafe.iptvlist.business.playlist.entity.M3UPlaylist;
+import com.matafe.iptvlist.business.util.StringUtil;
 
 /**
  * M3U Parser Unit Test
@@ -151,5 +156,31 @@ public class M3UParserTest {
     // assertThat(playlist.getItems().size() > 0, is(true));
     // }
     // }
+
+    // Only for sorting the list
+    @Test
+    public void testSort() {
+	String fileName = System.getenv("MY_PLAYLIST_FILE");
+	if (!StringUtil.isBlank(fileName)) {
+	    File m3uFile = new File(fileName);
+	    M3UPlaylist playlist = parser.read(m3uFile);
+
+	    List<M3UItem> items = playlist.getItems();
+
+	    Collections.sort(items, new Comparator<M3UItem>() {
+
+		@Override
+		public int compare(M3UItem o1, M3UItem o2) {
+		    return o1.getName().compareTo(o2.getName());
+		}
+	    });
+
+	    StringWriter sw = new StringWriter();
+	    parser.write(playlist, sw, null);
+
+	    System.out.println(sw.toString());
+
+	}
+    }
 
 }
