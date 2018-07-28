@@ -16,16 +16,26 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.matafe.iptvlist.business.sec.control.SecurityAuthenticator;
 
+/**
+ * Security Filter for Path Parameter Credentials
+ * 
+ * @author matafe@gmail.com
+ */
 @Provider
-@Secured
+@ParamSecured
 @Priority(Priorities.AUTHENTICATION)
-public class SecurityFilter implements ContainerRequestFilter {
+public class ParamSecurityFilter implements ContainerRequestFilter {
 
-    private static final Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED).build();
-    private static final Response ACCESS_FORBIDDEN = Response.status(Response.Status.FORBIDDEN).build();
-    private static final Response SERVER_ERROR = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    static final Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED).build();
+    static final Response ACCESS_FORBIDDEN = Response.status(Response.Status.FORBIDDEN).build();
+    static final Response SERVER_ERROR = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 
     @Context
     ResourceInfo resourceInfo;
@@ -59,7 +69,8 @@ public class SecurityFilter implements ContainerRequestFilter {
 		// Validate the token
 		authenticator.validateToken(token);
 	    } catch (Exception e) {
-		requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+		logger.error("Failed to validate the token: " + token, e);
+		requestContext.abortWith(ACCESS_DENIED);
 	    }
 
 	} else {
@@ -75,12 +86,12 @@ public class SecurityFilter implements ContainerRequestFilter {
     }
 
     private boolean isAdminRoleResouce() {
-	Secured secAnno = resourceInfo.getResourceClass().getAnnotation(Secured.class);
+	ParamSecured secAnno = resourceInfo.getResourceClass().getAnnotation(ParamSecured.class);
 	if (secAnno == null) {
-	    secAnno = resourceInfo.getResourceMethod().getAnnotation(Secured.class);
+	    secAnno = resourceInfo.getResourceMethod().getAnnotation(ParamSecured.class);
 	}
 
-	boolean isAdminRole = secAnno != null && secAnno.value() == Secured.Role.ADMIN;
+	boolean isAdminRole = secAnno != null && secAnno.value() == ParamSecured.Role.ADMIN;
 
 	return isAdminRole;
     }

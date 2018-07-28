@@ -109,7 +109,7 @@ public class M3UItemStore {
 		is = new FileInputStream(new File(property));
 	    } else {
 		// if not shipped!
-		String fileName = "source-playlist.m3u";
+		String fileName = "/source-playlist.m3u";
 		is = M3UItemStore.class.getResourceAsStream(fileName);
 		if (is == null) {
 		    is = getClass().getClassLoader().getResourceAsStream(fileName);

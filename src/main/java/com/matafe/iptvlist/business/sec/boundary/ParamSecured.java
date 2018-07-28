@@ -12,7 +12,7 @@ import javax.enterprise.util.Nonbinding;
 import javax.ws.rs.NameBinding;
 
 /**
- * Secured Annotation
+ * Secured Annotation for Path Parameter
  * 
  * @author matafe@gmail.com
  */
@@ -20,7 +20,7 @@ import javax.ws.rs.NameBinding;
 @NameBinding
 @Target({ TYPE, METHOD })
 @Retention(RUNTIME)
-public @interface Secured {
+public @interface ParamSecured {
 
     @Nonbinding
     Role value() default Role.USER;

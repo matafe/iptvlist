@@ -23,6 +23,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.matafe.iptvlist.business.ApplicationException;
 import com.matafe.iptvlist.business.playlist.control.M3UItemStore;
 import com.matafe.iptvlist.business.playlist.control.PlaylistGenerator;
@@ -31,7 +34,7 @@ import com.matafe.iptvlist.business.playlist.control.parser.M3uParserType;
 import com.matafe.iptvlist.business.playlist.entity.M3UItem;
 import com.matafe.iptvlist.business.playlist.entity.M3UPlaylist;
 import com.matafe.iptvlist.business.sec.boundary.ParamDecoder;
-import com.matafe.iptvlist.business.sec.boundary.Secured;
+import com.matafe.iptvlist.business.sec.boundary.ParamSecured;
 import com.matafe.iptvlist.business.util.HttpUtil;
 import com.matafe.iptvlist.business.util.URLLocator;
 
@@ -42,6 +45,8 @@ import com.matafe.iptvlist.business.util.URLLocator;
  */
 @Path("playlist")
 public class PlaylistResources {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     HttpUtil httpUtil;
@@ -64,7 +69,7 @@ public class PlaylistResources {
 
     @GET
     @Path("{username}/{password}")
-    @Secured
+    @ParamSecured
     public Response getIptvList(@PathParam("username") final String username,
 	    @PathParam("password") final String password) {
 
@@ -87,20 +92,20 @@ public class PlaylistResources {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("{username}/{password}/{channel}")
     @ParamDecoder
-    @Secured
+    @ParamSecured
     public Response getIptvList(@PathParam("username") final String username,
 	    @PathParam("password") final String password, @PathParam("channel") final String channel) {
-	return Response.ok(doStreaming(channel), MediaType.APPLICATION_OCTET_STREAM).build();
+	return Response.ok(doStreaming(channel)).build();
     }
 
     private StreamingOutput doStreaming(String channel) {
 	return new StreamingOutput() {
 	    @Override
 	    public void write(OutputStream output) throws IOException, WebApplicationException {
-		try {
-		    InputStream inputStream = httpUtil.getAsInputStream(urlLocator.locate(channel));
+		try (InputStream inputStream = httpUtil.getAsInputStream(urlLocator.locate(channel))) {
 		    byte[] buffer = new byte[1024];
 		    int length;
 		    while ((length = inputStream.read(buffer)) != -1) {
@@ -108,8 +113,8 @@ public class PlaylistResources {
 		    }
 		    output.flush();
 		} catch (Exception e) {
-		    e.printStackTrace();
-		    throw new ApplicationException("Could not load the channel: " + channel);
+		    logger.error("Failed to stream the channel: " + channel, e);
+		    throw new ApplicationException("Failed to stream the channel: " + channel);
 		}
 	    }
 	};
@@ -124,7 +129,7 @@ public class PlaylistResources {
     @GET
     @Produces({ MediaType.APPLICATION_JSON })
     @Path("sourcelist")
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     public Response getItems() {
 	Collection<M3UItem> items = itemStore.getItems();
 	return Response.ok(items).build();
@@ -132,7 +137,7 @@ public class PlaylistResources {
 
     @GET
     @Path("clear")
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     public Response clear() {
 	itemStore.clear();
 	return Response.ok("Original items from cache cleared.").build();
@@ -140,7 +145,7 @@ public class PlaylistResources {
 
     @GET
     @Path("reload")
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     public Response reload() {
 	return Response.ok(MessageFormat.format("Original list reloaded. {0} items cached", itemStore.realod()))
 		.build();

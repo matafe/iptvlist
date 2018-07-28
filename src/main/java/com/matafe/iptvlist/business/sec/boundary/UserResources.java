@@ -62,7 +62,7 @@ public class UserResources {
     }
 
     @GET
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> findUsers() {
 	List<User> users = securityManager.findAll();
@@ -80,7 +80,7 @@ public class UserResources {
     }
 
     @GET
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findUser(@PathParam("username") String username) {
@@ -88,7 +88,7 @@ public class UserResources {
     }
 
     @DELETE
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     @Path("{username}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response removeUser(@PathParam("username") String username) {
@@ -97,7 +97,7 @@ public class UserResources {
     }
 
     @PUT
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     @Path("{username}/active/{year}/{month}/{day}/{hour}/{min}/{sec}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response activateUser(@PathParam("username") String username, @PathParam("year") Integer year,
@@ -109,7 +109,7 @@ public class UserResources {
     }
 
     @PUT
-    @Secured(Secured.Role.ADMIN)
+    @ParamSecured(ParamSecured.Role.ADMIN)
     @Path("{username}/inactive")
     @Produces(MediaType.TEXT_PLAIN)
     public Response inactivateUser(@PathParam("username") String username) {
