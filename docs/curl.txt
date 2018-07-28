@@ -5,35 +5,35 @@ Management
 Users
 
 # Login. Return the Access Token
-curl -X POST -H "Content-Type: application/json" -d '{"username":"admin","password":"secret"}' http://localhost:8080/iptvlist/resources/user/login
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin","password":"secret"}' https://iptvapp.herokuapp.com/resources/user/login
 
 # Find all users
-curl -i -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user
+curl -i -H "Authorization: Bearer TOKEN" https://iptvapp.herokuapp.com/resources/user
 
 # Find an user by username ( 'admin')
-curl -i -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/admin
+curl -i -H "Authorization: Bearer TOKEN" https://iptvapp.herokuapp.com/resources/user/admin
 
 # Remove an user
-curl -i -X DELETE -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/admin
+curl -i -X DELETE -H "Authorization: Bearer TOKEN" https://iptvapp.herokuapp.com/resources/user/admin
 
 # Remove all users
-# curl -i -X DELETE -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user
+# curl -i -X DELETE -H "Authorization: Bearer TOKEN" https://iptvapp.herokuapp.com/resources/user
 
 # Add new users
-curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"username":"admin","password":"31OpjXYGJQxxzbOxsedW/g==","fullname":"Administrator","validUntil":"2018-08-22 00:00:00"}' http://localhost:8080/iptvlist/resources/user
-curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"username":"test","password":"123456","fullname":"Test","validUntil":"2018-08-01 00:00:00"}' http://localhost:8080/iptvlist/resources/user
+curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"username":"admin","password":"31OpjXYGJQxxzbOxsedW/g==","fullname":"Administrator","validUntil":"2018-08-22 00:00:00"}' https://iptvapp.herokuapp.com/resources/user
+curl -i -X POST -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d '{"username":"test","password":"123456","fullname":"Test","validUntil":"2018-08-01 00:00:00"}' https://iptvapp.herokuapp.com/resources/user
 
 # Inactive an user
-curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/test/inactive
+curl -i -X PUT -H "Authorization: Bearer TOKEN" https://iptvapp.herokuapp.com/resources/user/test/inactive
 
 # Active an user until 25-12-2018 20:30:00
-curl -i -X PUT -H "Authorization: Bearer TOKEN" http://localhost:8080/iptvlist/resources/user/test/active/2018/12/25/20/30/00
+curl -i -X PUT -H "Authorization: Bearer TOKEN" https://iptvapp.herokuapp.com/resources/user/test/active/2018/12/25/20/30/00
 
 ===================================================================================
 
 IPTV List
 
-curl -i http://localhost:8080/iptvlist/resources/user/test/123456T
+curl -i https://iptvapp.herokuapp.com/resources/user/test/123456T
 
-curl -i http://localhost:8080/iptvlist/resources/iptv/count
+curl -i https://iptvapp.herokuapp.com/resources/playlist/count
 
