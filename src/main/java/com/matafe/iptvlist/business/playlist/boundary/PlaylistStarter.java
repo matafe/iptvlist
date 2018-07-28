@@ -25,6 +25,10 @@ public class PlaylistStarter {
     @PostConstruct
     public void init() {
 	logger.info("Starting the playlist... loading items");
-	store.initialize();
+	try {
+	    store.initialize();
+	} catch (Exception e) {
+	    logger.error("Failure to initialize the item store", e);
+	}
     }
 }
