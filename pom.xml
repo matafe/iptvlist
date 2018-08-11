@@ -28,7 +28,7 @@
 		<hamcrest.version>1.3</hamcrest.version>
 		<junit.version>4.12</junit.version>
 	</properties>
- 
+ <!-- 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -40,9 +40,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+ -->
 	<dependencies>
-
+<!-- 
 		<dependency>
 			<groupId>io.thorntail</groupId>
 			<artifactId>ejb</artifactId>
@@ -56,7 +56,7 @@
 			<groupId>io.thorntail</groupId>
 			<artifactId>cdi</artifactId>
 		</dependency>
- 
+  -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
@@ -64,14 +64,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- compile dependencies -->
-<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-<!-- 
-<dependency>
-    <groupId>org.apache.httpcomponents</groupId>
-    <artifactId>httpclient</artifactId>
-    <version>4.5.6</version>
-</dependency>
-		 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

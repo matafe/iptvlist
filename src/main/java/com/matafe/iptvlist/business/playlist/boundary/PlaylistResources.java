@@ -1,8 +1,8 @@
 package com.matafe.iptvlist.business.playlist.boundary;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -98,20 +98,27 @@ public class PlaylistResources {
     @ParamSecured
     public Response getIptvList(@PathParam("username") final String username,
 	    @PathParam("password") final String password, @PathParam("channel") final String channel) {
-	return Response.ok(doStreaming(channel)).build();
+	return Response.ok(doStreaming(username, channel)).build();
     }
 
-    private StreamingOutput doStreaming(String channel) {
+    private StreamingOutput doStreaming(final String username, final String channel) {
 	return new StreamingOutput() {
 	    @Override
 	    public void write(OutputStream output) throws IOException, WebApplicationException {
-		try (InputStream inputStream = httpUtil.getAsInputStream(urlLocator.locate(channel))) {
+		try (BufferedInputStream in = new BufferedInputStream(
+			httpUtil.getAsInputStream(urlLocator.locate(channel)))) {
 		    byte[] buffer = new byte[1024];
 		    int length;
-		    while ((length = inputStream.read(buffer)) != -1) {
+		    while ((length = in.read(buffer)) != -1) {
 			output.write(buffer, 0, length);
 		    }
 		    output.flush();
+		} catch (IOException ioe) {
+		    if (ioe.getMessage().toLowerCase().contains("broken pipe")) {
+			logger.info("{} stopped watching '{}'.", username, channel);
+		    } else {
+			throw ioe;
+		    }
 		} catch (Exception e) {
 		    logger.error("Failed to stream the channel: " + channel, e);
 		    throw new ApplicationException("Failed to stream the channel: " + channel);

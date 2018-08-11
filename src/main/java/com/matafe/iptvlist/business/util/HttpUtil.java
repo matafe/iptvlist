@@ -53,7 +53,7 @@ public class HttpUtil {
 	    // } else {
 	    // in = conn.getErrorStream();
 	    // }
-	     in = new BufferedInputStream(conn.getInputStream());
+	     in = conn.getInputStream();
 	    return in;
 	} catch (Exception e) {
 	    throw new RuntimeException("Failed to connect to url", e);
